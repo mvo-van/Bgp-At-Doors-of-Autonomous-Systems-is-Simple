@@ -1,2 +1,2 @@
 FROM frrouting/frr
-COPY frr.conf /etc/frr/deamons
+COPY frr.conf /etc/frr/daemons
