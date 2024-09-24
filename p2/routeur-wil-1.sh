@@ -6,3 +6,4 @@ ip addr add 239.1.1.1/24 dev vxlan10
 ip link set dev vxlan10 up
 brctl addif br0 eth1
 brctl addif br0 vxlan10
+bash
