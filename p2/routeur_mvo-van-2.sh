@@ -1,3 +1,4 @@
+# !/bin/bash
 ip link add br0 type bridge
 ip link set dev br0 up
 ip addr add 10.1.1.2/24 dev eth0
