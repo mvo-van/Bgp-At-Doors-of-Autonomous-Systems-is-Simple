@@ -1,10 +1,15 @@
-# !/bin/bash
+# !/bin/sh
+sleep 20
+
 ip link add br0 type bridge
 ip link set dev br0 up
 ip link add vxlan10 type vxlan id 10 dstport 4789
 ip link set dev vxlan10 up
 brctl addif br0 vxlan10
 brctl addif br0 eth1
+
+touch /etc/frr/vtysh.conf
+chmod +xwr /etc/frr/vtysh.conf
 
 vtysh << ARRET
 conf t
@@ -29,4 +34,3 @@ router bgp 1
 router ospf
 !
 ARRET
-bash

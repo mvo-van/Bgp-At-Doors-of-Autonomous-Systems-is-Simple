@@ -1,4 +1,8 @@
-# !/bin/bash
+# !/bin/sh
+
+touch /etc/frr/vtysh.conf
+chmod +xwr /etc/frr/vtysh.conf
+
 vtysh << ARRET
 conf t
 no ipv6 forwarding
@@ -31,4 +35,3 @@ router ospf
     network 0.0.0.0/0 area 0
 !
 ARRET
-bash
