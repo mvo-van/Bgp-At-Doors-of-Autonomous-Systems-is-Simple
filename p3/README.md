@@ -9,7 +9,7 @@
 
 * Route Reflector :
  - Connecter en Ethernet aux différents routeurs.
- - Utilisation du protocole iBGP pour la communication avec les routeurs.
+ - Utilisation du protocole MP-BGP pour la communication avec les routeurs.
  - Utilisation du protocole OSPF pour informer des différentes routes disponibles.
 
 * Routeurs :
