@@ -1,6 +1,4 @@
 # !/bin/sh
-sleep 20
-
 ip link add br0 type bridge
 ip link set dev br0 up
 ip link add vxlan10 type vxlan id 10 dstport 4789
