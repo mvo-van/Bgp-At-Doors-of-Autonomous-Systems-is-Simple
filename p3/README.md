@@ -1,126 +1,36 @@
-router2:
+# Explications
 
-____________RELIER NOTRE VXLAN ET ETH1_________________________________
-ip link add br0 type bridge
-ip link set dev br0 up
-ip link add vxlan10 type vxlan id 10 dstport 4789
-ip link set dev vxlan10 up
-brctl addif br0 vxlan10
-brctl addif br0 eth1
-_______________________________________________________________________
+* On a notre premier système autonome (AS).
+* Notre route reflector (spine / RR) permet de faire communiquer les différents routeurs (leafs / VTEP) entre eux ainsi que de communiquer vers l'extérieur, grâce au protocole BGP.
+* L'ensemble des routeurs et des machines sont alors présentes dans un même VXLAN (id: 10) et peuvent communiquer entre eux comme s'ils étaient branchés sur un même routeur.
+* L'avantage du RR est de centraliser les différents routeurs en un seul point, permettant une extensibilité et une simplicité de l'architecture.
 
-no ipv6 forwarding
-!
-interface eth0                                      
-    ip address 10.1.1.2/30
-    ip ospf area 0                                  (connexion a l'air 0 de ospf)
+# Mise en place
 
-interface lo
-    ip address 1.1.1.2/32
-    ip ospf area 0
+* Route Reflector :
+ - Connecter en Ethernet aux différents routeurs.
+ - Utilisation du protocole iBGP pour la communication avec les routeurs.
+ - Utilisation du protocole OSPF pour informer des différentes routes disponibles.
 
-router bgp 1
-    neighbor 1.1.1.1 remote-as 1                    (appartient a l'AS1)
-    neighbor 1.1.1.1 update-source lo               (envoi comme source l'adresse de lo)
-    
-    address-family l2vpn evpn
-        neighbor 1.1.1.1 activate
-        advertise-all-vni
-    exit-address-family
+* Routeurs :
+ - Connecter au RR et informer les autres routeurs de son existence avec le protocole OSPF.
+ - Connexion en bridge à la machine hôte et inscription au VXLAN 10.
 
-router ospf
+* Hôtes :
+ - Indiquer une adresse IP.
 
+# Avant d'utiliser les images sur gns3
 
-router 1 Route Reflector:
+`./p3/run.sh`
 
-no ipv6 forwarding
-!
-interface eth0
-    ip address 10.1.1.1/30
-!
-interface eth1
-    ip address 10.1.1.5/30
-!
-interface eth2
-    ip address 10.1.1.9/30
-!
-interface lo
-    ip address 1.1.1.1/32
-!
+# Vérification de l'exercice
 
-router bgp 1                                        (initialisation d'un systeme autonome (AS1))
-    neighbor ibgp peer-group                        (nomage du peer-group 'ibgp')
-    neighbor ibgp remote-as 1                       (configure une session BGP avec voisins appartenent au meme AS (le 1), donc ils font partie du meme reseau interne)
-    neighbor ibgp update-source lo                   (specifie que le routeru doit utiliser l'adresse ip de son interface lo pour BGP de session ibgp, intependant des adresse physique)
-    bgp listen range 1.1.1.0/29 peer-group ibgp     (ecoute des adresse ip dans la plage 1.1.1.0/29 et est ajouter au peer groupe ibgp)
+* Se connecter à une machine hôte et vérifier qu'on peut ping les autres. (ex : `ping 30.1.1.1`)
+* Se connecter à un routeur et executer :
+    `vtysh`
+    `conf t`
+    `router bgp 1`
+    `do sh ip route`
+ Vérifier alors que les ip des routeurs soient toutes présentes et que le protocole utilisé pour les découvrir est OSPF.
 
-    address-family l2vpn evpn                       (definition du passage par couche 2 (ethernet))?
-        neighbor ibgp activate                      (activation des session BGP)
-        neighbor ibgp route-reflector-client   (reflet des routes bgp vers les autres routeur, possibiliter de comunication indirect entre les routeur)
-    exit-address-family
-
-router ospf
-    network 0.0.0.0/0 area 0                        (etablisement des voisin sur toute ses interface et contruction de LSDB)
-
-line vty                                            (peu etre pas utile et remplasable par bash)
-
-
-router 3:
-ip link add br0 type bridge
-ip link set dev br0 up
-ip link add vxlan10 type vxlan id 10 dstport 4789
-ip link set dev vxlan10 up
-brctl addif br0 vxlan10
-brctl addif br0 eth0
-
-no ipv6 forwarding
-!
-interface eth1
-    ip address 10.1.1.6/30
-    ip ospf area 0
-!
-interface lo
-    ip address 1.1.1.3/32
-    ip ospf area 0
-!
-router bgp 1                
-    neighbor 1.1.1.1 remote-as 1
-    neighbor 1.1.1.1 update-source lo
-    !
-    address-family l2vpn evpn
-        neighbor 1.1.1.1 activate
-    exit-address-family
-!
-router ospf
-!
-
-router 4:
-
-ip link add br0 type bridge
-ip link set dev br0 up
-ip link add vxlan10 type vxlan id 10 dstport 4789
-ip link set dev vxlan10 up
-brctl addif br0 vxlan10
-brctl addif br0 eth0
-
-no ipv6 forwarding
-!
-interface eth2
-    ip address 10.1.1.10/30
-    ip ospf area 0
-!
-interface lo
-    ip address 1.1.1.4/32
-    ip ospf area 0
-!
-router bgp 1
-    neighbor 1.1.1.1 remote-as 1
-    neighbor 1.1.1.1 update-source lo
-    !
-    address-family l2vpn evpn
-        neighbor 1.1.1.1 activate
-        advertise-all-vni
-    exit-address-family
-!
-router ospf
-!
+* Aussi, `do sh bgp l2vpn evpn` permet de vérifier que les machines hôtes soient connectées en EVPN, ainsi que les différents chemins pour y accéder.

@@ -14,8 +14,8 @@
 
 # Avant d'utiliser les images sur gns3
 
-`docker build -f routeur.Dockerfile . -t routeur_wil:latest`
-`docker build -f host.Dockerfile . -t host_wil:latest`
+`docker build -f routeur.Dockerfile . -t routeur_frrouting:latest`
+`docker build -f host.Dockerfile . -t host_busybox:latest`
 
 
 # Vérification de l'exercice
@@ -29,5 +29,5 @@
 
 * Se rendre sur l'interface de GNS3 et ouvrir une console web sur les deux appareils :
     * On doit avoir accès aux deux appareils :
-        * [ ] host_wil_1 - ouvre un shell bash
-        * [ ] routeur_wil - ouvre une console avec le daemon frrouting en foreground qui affiche les daemons actifs
+        * [ ] host_bbellavi-1 - ouvre un shell bash
+        * [ ] routeur_bbellavi - ouvre une console avec le daemon frrouting en foreground qui affiche les daemons actifs
