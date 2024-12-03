@@ -11,6 +11,6 @@
     - configuration d'un VXLAN et connexion des routeurs au VXLAN
 
 * Vérifications :
+    - Executer le script unicast puis multicast
     - Se connecter à chaque host et vérifier que l'on peut pinger les machines entre elles.
-    - Lister les interfaces et montrer qu'aucune adresse IP n'est liée à l'interface eth1
-    - verification vxlan : ip -d link show vxlan10
+    - Verification vxlan dans les routeurs : ip -d link show vxlan10
