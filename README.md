@@ -9,4 +9,4 @@
 6. Executer `vagrant box add GNS3.box --name GNS3` pour creer la box vagrant
 7. Executer `vagrant up` et attendre le démarrage complet de la VM
 7. Executer `vagrant ssh`
-8. Executer `sh /opt/badass/docker.sh`
+8. Executer `cd /opt/badass && sh docker.sh`
